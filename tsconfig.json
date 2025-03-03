@@ -3,6 +3,12 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@environments/*": ["src/environments/*"],
+      "@modules/gifs/interfaces/*": ["src/app/modules/gifs-module/interfaces/*"],
+      "@modules/gifs/utils/*": ["src/app/modules/gifs-module/utils/*"]
+    },
     "outDir": "./dist/out-tsc",
     "strict": true,
     "noImplicitOverride": true,
