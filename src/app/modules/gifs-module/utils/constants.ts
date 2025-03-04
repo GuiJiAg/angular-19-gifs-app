@@ -1,6 +1,8 @@
 import { v4 as uuidv4 } from 'uuid';
-import { SideMenuOption } from '../interfaces/side-menu-option';
-import { GifsListItem } from '../interfaces/gifs-list-item';
+import type { SideMenuOption } from '../interfaces/side-menu-option';
+import type { GifsListItem } from '../interfaces/gifs-list-item';
+import type { ApiGiphyRequestTrendingModel } from '../interfaces/api-giphy-request-trending-model';
+import { environment } from '@environments/environment';
 
 export class Constants {
 
@@ -99,6 +101,15 @@ export class Constants {
       alt: ''
     }
   ];
+
+  //GIPHY SERVICE
+  public API_GIPHY_REQUEST_TRENDING_EXAMPLE: ApiGiphyRequestTrendingModel = {
+    api_key: environment.giphy.apiKey,
+    limit: '25',
+    offset: '0',
+    rating: 'g',
+    bundle: 'messaging_non_clips'
+  };
 
   constructor() { }
 }
