@@ -1,6 +1,7 @@
 <section class="py-5">
   <app-gifs-list
     [gifsList]="gifsList()"
+    [giphyTrendingGifs]="giphyService.trendingGifs()"
     >
   </app-gifs-list>
 </section>

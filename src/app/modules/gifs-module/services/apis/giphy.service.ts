@@ -1,9 +1,26 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { environment } from '@environments/environment';
 import type { ApiGiphyRequestTrendingModel } from '@modules/gifs/interfaces/api-giphy-request-trending-model';
 import type { ApiGiphyResponseTrendingModel } from '@modules/gifs/interfaces/api-giphy-response-trending-model';
-import { Observable } from 'rxjs';
+import type { Gif } from '@modules/gifs/interfaces/gif';
+import { Constants } from '@modules/gifs/utils/constants';
+import { GiphyMapper } from '@modules/gifs/utils/mappers/giphy-mapper';
+
+const {
+  API_GIPHY_REQUEST_TRENDING_EXAMPLE
+} = new Constants();
+
+//Destructuración del host y basePath
+const {
+  host: HOST,
+  basePath: BASE_PATH
+} = environment.giphy;
+
+//Destructuración de endpoints
+const {
+  trending: TRENDING
+} = environment.giphy.endpoints;
 
 @Injectable({
   providedIn: 'root'
@@ -16,32 +33,43 @@ export class GiphyService {
    */
   private http: HttpClient = inject(HttpClient);
 
-  constructor() { }
+  //SIGNALS
+  public trendingGifs: WritableSignal<Array<Gif>> = signal<Array<Gif>>(new Array());
 
-  //PUBLICS FUNCTIONS
-  public getTrendingGifs(request: ApiGiphyRequestTrendingModel): Observable<ApiGiphyResponseTrendingModel> {
+  constructor() {
+    this.getTrendingGifs(API_GIPHY_REQUEST_TRENDING_EXAMPLE);
+  }
+
+  //PUBLIC FUNCTIONS
+  public getTrendingGifs(request: ApiGiphyRequestTrendingModel): void {
+    //Destructuración de la request
     const {
-      api_key,
-      limit,
-      offset,
-      rating,
-      bundle
+      api_key: API_KEY,
+      limit: LIMIT,
+      offset: OFFSET,
+      rating: RATING,
+      bundle: BUNDLE
     } = request;
 
-    return this.http.get<ApiGiphyResponseTrendingModel>(`
-      ${ environment.giphy.host }
-      ${ environment.giphy.basePath }
-      ${ environment.giphy.endpoints.trending }
-      `,
+    this.http.get<ApiGiphyResponseTrendingModel>(
+      HOST
+      + BASE_PATH
+      + TRENDING,
       {
         params: {
-          api_key: api_key,
-          limit: limit!,
-          offset: offset!,
-          rating: rating!,
-          bundle: bundle!
+          api_key: API_KEY,
+          limit: LIMIT!,
+          offset: OFFSET!,
+          rating: RATING!,
+          bundle: BUNDLE!
         }
       }
-    );
+    ).subscribe( (response) => {
+      const {
+        data: DATA
+      } = response;
+
+      this.trendingGifs.set(GiphyMapper.mapGiphyResponseTrendingDataToGifs(DATA));
+    });
   }
 }

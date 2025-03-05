@@ -1,10 +1,23 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-  @for (gif of gifsList(); track gif.id) {
-    <div>
-      <app-gifs-list-item
-        [gifsListItem]="gif"
-        >
-      </app-gifs-list-item>
-    </div>
+  @if (normalGifsAreAviable) {
+    @for (gif of gifsList(); track gif.id) {
+      <div>
+        <app-gifs-list-item
+          [normalGifsAreAviable]="normalGifsAreAviable"
+          [gifsListItem]="gif"
+          >
+        </app-gifs-list-item>
+      </div>
+    }
+  } @else {
+    @for (gif of giphyTrendingGifs(); track gif.id) {
+      <div>
+        <app-gifs-list-item
+          [normalGifsAreAviable]="normalGifsAreAviable"
+          [giphyTrendingGif]="gif"
+          >
+        </app-gifs-list-item>
+      </div>
+    }
   }
 </div>

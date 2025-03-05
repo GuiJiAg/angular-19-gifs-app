@@ -1,5 +1,12 @@
-<img
-  [class]="gifsListItem().style"
-  [src]="gifsListItem().src"
-  [alt]="gifsListItem().alt"
-/>
+@if (normalGifsAreAviable()) {
+  <img
+    [class]="gifsListItem()!.style"
+    [src]="gifsListItem()!.src"
+    [alt]="gifsListItem()!.alt"
+  />
+} @else {
+  <img
+    class="h-full w-full rounded-lg object-cover"
+    [src]="giphyTrendingGif()!.url"
+  />
+}

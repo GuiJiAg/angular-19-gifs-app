@@ -105,7 +105,7 @@ export class Constants {
   //GIPHY SERVICE
   public API_GIPHY_REQUEST_TRENDING_EXAMPLE: ApiGiphyRequestTrendingModel = {
     api_key: environment.giphy.apiKey,
-    limit: '25',
+    limit: '20',
     offset: '0',
     rating: 'g',
     bundle: 'messaging_non_clips'

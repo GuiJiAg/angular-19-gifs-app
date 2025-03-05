@@ -1,5 +1,6 @@
 import { Component, input, InputSignal } from '@angular/core';
-import { GifsListItem } from '@modules/gifs/interfaces/gifs-list-item';
+import type { Gif } from '@modules/gifs/interfaces/gif';
+import type { GifsListItem } from '@modules/gifs/interfaces/gifs-list-item';
 
 @Component({
   selector: 'app-gifs-list-item',
@@ -9,5 +10,7 @@ import { GifsListItem } from '@modules/gifs/interfaces/gifs-list-item';
 })
 export class GifsListItemComponent {
   //INPUTS
-  public gifsListItem: InputSignal<GifsListItem> = input.required<GifsListItem>();
+  public normalGifsAreAviable = input.required<boolean>();
+  public gifsListItem: InputSignal<GifsListItem | undefined>  = input<GifsListItem>();
+  public giphyTrendingGif: InputSignal<Gif | undefined>  = input<Gif>();
 }
