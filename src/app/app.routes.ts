@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 import { DashboardPageComponent } from './modules/gifs-module/pages/dashboard-page/dashboard-page.component';
+import { RouterDynamicsLinksGuard } from './modules/gifs-module/guards/router-dynamics-links.guard';
+import { HistoryPageComponent } from './modules/gifs-module/pages/history-page/history-page.component';
 
 export const routes: Routes = [
   {
@@ -29,6 +31,24 @@ export const routes: Routes = [
          */
         loadComponent: () =>
           import('./modules/gifs-module/pages/search-page/search-page.component')
+      },
+      {
+        path: 'history/:key/:id',
+
+        /**
+         * Este Guard impide la navegación a este path, menos para aquellos
+         * componentes que tengan activada la posibilidad de navegación interna
+         */
+        canActivate: [RouterDynamicsLinksGuard],
+
+        /**
+         * Carga "lazy load" mediante "import" sin "then".
+         * Igual que la anterior, pero es necesario cambiar la clase componente,
+         * añadiendo un "default" justo después del "export";
+         * algo más legible, pero elimina poder operativo al no usar la función "then"
+         * y se debe modificar directamente el componente
+         */
+        loadComponent: () => HistoryPageComponent
       },
       {
         path: '**',

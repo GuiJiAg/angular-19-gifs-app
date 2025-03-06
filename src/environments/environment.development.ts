@@ -10,7 +10,8 @@ export const environment = {
     host: 'https://api.giphy.com',
     basePath: '/v1/gifs',
     endpoints: {
-      trending: '/trending'
+      trending: '/trending',
+      search: '/search'
     }
   }
 };

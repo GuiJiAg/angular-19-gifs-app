@@ -12,5 +12,5 @@ export class GifsListItemComponent {
   //INPUTS
   public normalGifsAreAviable = input.required<boolean>();
   public gifsListItem: InputSignal<GifsListItem | undefined>  = input<GifsListItem>();
-  public giphyTrendingGif: InputSignal<Gif | undefined>  = input<Gif>();
+  public giphyGifs: InputSignal<Gif | undefined>  = input<Gif>();
 }

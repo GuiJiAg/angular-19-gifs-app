@@ -3,6 +3,7 @@ import type { SideMenuOption } from '../interfaces/side-menu-option';
 import type { GifsListItem } from '../interfaces/gifs-list-item';
 import type { ApiGiphyRequestTrendingModel } from '../interfaces/api-giphy-request-trending-model';
 import { environment } from '@environments/environment';
+import { ApiGiphyRequestSearchModel } from '../interfaces/api-giphy-request-search-model';
 
 export class Constants {
 
@@ -110,6 +111,19 @@ export class Constants {
     rating: 'g',
     bundle: 'messaging_non_clips'
   };
+
+  public API_GIPHY_REQUEST_SEARCH_EXAMPLE: ApiGiphyRequestSearchModel = {
+    api_key: environment.giphy.apiKey,
+    q: "",
+    limit: '20',
+    offset: '0',
+    rating: 'g',
+    bundle: 'messaging_non_clips'
+  };
+
+  //LOCAL STORAGE ITEMS
+  public LOCAL_STORAGE_GIFS_HISTORY_ITEM_NAME: string = 'gifsHistory';
+  public LOCAL_STORAGE_KEYS_HISTORY_ITEM_NAME: string = 'keysHistory';
 
   constructor() { }
 }

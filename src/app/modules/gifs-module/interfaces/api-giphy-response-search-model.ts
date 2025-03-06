@@ -1,10 +1,10 @@
-export interface ApiGiphyResponseTrendingModel {
-  data:       ApiGiphyResponseTrendingDataModel[];
+export interface ApiGiphyResponseSearchModel {
+  data:       ApiGiphyResponseSearchDataModel[];
   meta:       Meta;
   pagination: Pagination;
 }
 
-export interface ApiGiphyResponseTrendingDataModel {
+export interface ApiGiphyResponseSearchDataModel {
   type:                       Type;
   id:                         string;
   url:                        string;
@@ -23,10 +23,10 @@ export interface ApiGiphyResponseTrendingDataModel {
   import_datetime:            Date;
   trending_datetime:          Date | TrendingDatetimeEnum;
   images:                     Images;
+  user?:                      User;
   analytics_response_payload: string;
   analytics:                  Analytics;
   alt_text:                   string;
-  user?:                      User;
 }
 
 export interface Analytics {

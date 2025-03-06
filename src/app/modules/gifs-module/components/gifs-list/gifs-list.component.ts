@@ -15,5 +15,5 @@ export class GifsListComponent {
 
   //INPUTS
   public gifsList: InputSignal<Array<GifsListItem>> = input.required<Array<GifsListItem>>();
-  public giphyTrendingGifs: InputSignal<Array<Gif>> = input.required<Array<Gif>>();
+  public giphyGifs: InputSignal<Array<Gif>> = input.required<Array<Gif>>();
 }

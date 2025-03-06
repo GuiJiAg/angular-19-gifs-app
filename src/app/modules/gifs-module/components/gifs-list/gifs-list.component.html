@@ -10,11 +10,11 @@
       </div>
     }
   } @else {
-    @for (gif of giphyTrendingGifs(); track gif.id) {
+    @for (gif of giphyGifs(); track gif.id) {
       <div>
         <app-gifs-list-item
           [normalGifsAreAviable]="normalGifsAreAviable"
-          [giphyTrendingGif]="gif"
+          [giphyGifs]="gif"
           >
         </app-gifs-list-item>
       </div>
