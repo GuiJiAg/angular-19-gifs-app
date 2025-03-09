@@ -26,8 +26,10 @@ export class Constants {
   ];
   public SIDE_MENU_OPTIONS_ROUTER_LINK_ACTIVE_STYLE: string = 'bg-blue-800';
 
+  //GLOBAL PAGES
+  public SUB_ARRAYS_LENGTH_OF_GIFS_MATRIX: number = 3;
+
   //TRENDING PAGE
-  //Gifs List
   public GIFS_LIST_EXAMPLE: Array<GifsListItem> = [
     {
       id: uuidv4(),
@@ -106,7 +108,7 @@ export class Constants {
   //GIPHY SERVICE
   public API_GIPHY_REQUEST_TRENDING_EXAMPLE: ApiGiphyRequestTrendingModel = {
     api_key: environment.giphy.apiKey,
-    limit: '20',
+    limit: '36',
     offset: '0',
     rating: 'g',
     bundle: 'messaging_non_clips'
@@ -115,7 +117,7 @@ export class Constants {
   public API_GIPHY_REQUEST_SEARCH_EXAMPLE: ApiGiphyRequestSearchModel = {
     api_key: environment.giphy.apiKey,
     q: "",
-    limit: '20',
+    limit: '36',
     offset: '0',
     rating: 'g',
     bundle: 'messaging_non_clips'

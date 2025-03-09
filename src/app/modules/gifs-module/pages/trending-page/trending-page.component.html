@@ -1,8 +1,10 @@
 <section class="py-5">
   <app-gifs-list
     [gifsList]="gifsList()"
-    [giphyGifs]="giphyService.trendingGifs()"
+    [giphyGifsList]="gifsTrendingList()"
+    [subArraysLength]="subArraysLength()"
+    [scrollPosition]="scrollPositionSaved()"
+    (gifsListOutput)="updateScrollState($event)"
     >
   </app-gifs-list>
 </section>
-

@@ -1,14 +1,15 @@
-import { Component, computed, inject, OnDestroy, OnInit, signal, WritableSignal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal, WritableSignal } from '@angular/core';
 import { GifsListComponent } from "../../components/gifs-list/gifs-list.component";
 import { Constants } from '@modules/gifs/utils/constants';
 import { GiphyService } from '../../services/apis/giphy.service';
 import { GifsListItem } from '@modules/gifs/interfaces/gifs-list-item';
 import { ActivatedRoute } from '@angular/router';
-import { map, Subject, Subscription, takeUntil, tap } from 'rxjs';
+import { map, Subject, takeUntil } from 'rxjs';
 import { Gif } from '@modules/gifs/interfaces/gif';
 
 const {
-  GIFS_LIST_EXAMPLE
+  GIFS_LIST_EXAMPLE,
+  SUB_ARRAYS_LENGTH_OF_GIFS_MATRIX
 } = new Constants();
 
 @Component({
@@ -28,6 +29,7 @@ export class HistoryPageComponent implements OnInit, OnDestroy {
   //SIGNALS
   public gifsList: WritableSignal<Array<GifsListItem>> = signal(GIFS_LIST_EXAMPLE);
   public gifsHistory: WritableSignal<Array<Gif>> = signal<Array<Gif>>(new Array());
+  public subArraysLength: WritableSignal<number> = signal<number>(SUB_ARRAYS_LENGTH_OF_GIFS_MATRIX);
 
   //IMPLEMENTS FUNCTIONS
   ngOnInit(): void {

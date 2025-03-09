@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { computed, effect, EffectRef, inject, Injectable, Signal, signal, WritableSignal } from '@angular/core';
+import { computed, effect, EffectRef, inject, Injectable, OnDestroy, Signal, signal, WritableSignal } from '@angular/core';
 import { environment } from '@environments/environment';
 import type { ApiGiphyRequestSearchModel } from '@modules/gifs/interfaces/api-giphy-request-search-model';
 import type { ApiGiphyRequestTrendingModel } from '@modules/gifs/interfaces/api-giphy-request-trending-model';
@@ -8,11 +8,10 @@ import type { ApiGiphyResponseTrendingModel } from '@modules/gifs/interfaces/api
 import type { Gif } from '@modules/gifs/interfaces/gif';
 import { Constants } from '@modules/gifs/utils/constants';
 import { GiphyMapper } from '@modules/gifs/utils/mappers/giphy-mapper';
-import { map, Observable, tap } from 'rxjs';
+import { map, Observable, Subject, takeUntil, tap } from 'rxjs';
 import { LocalStorageUtils } from '@modules/gifs/utils/local-storage-utils';
 
 const {
-  API_GIPHY_REQUEST_TRENDING_EXAMPLE,
   LOCAL_STORAGE_GIFS_HISTORY_ITEM_NAME
 } = new Constants();
 
@@ -31,7 +30,10 @@ const {
 @Injectable({
   providedIn: 'root'
 })
-export class GiphyService {
+export class GiphyService implements OnDestroy {
+  //SUBSCRIPTION DESTROYER
+  private destroySubscription$ = new Subject<void>();
+
   //SERVICES
   /**
    * Este inject "HttpClient", al ser una instancia, debe de ser provista
@@ -39,7 +41,7 @@ export class GiphyService {
    */
   private http: HttpClient = inject(HttpClient);
 
-  //SIGNALS
+  //PUBLIC SIGNALS
   public trendingGifs: WritableSignal<Array<Gif>> = signal<Array<Gif>>(new Array());
   public searchGifs: WritableSignal<Array<Gif>> = signal<Array<Gif>>(new Array());
   public searchGifsHistory: WritableSignal<Record<string, Array<Gif>>> = signal<Record<string, Array<Gif>>>(
@@ -54,6 +56,10 @@ export class GiphyService {
     return Object.keys(this.searchGifsHistory());
   });
 
+  //PRIVATE SIGNALS
+  private _trendingGifsPage: WritableSignal<number> = signal<number>(0);
+  private _trendingGifsIsLoading: WritableSignal<boolean> = signal<boolean>(false);
+
   //EFFECTS -> Cada vez que cambia un signal, se ejecutan los effects
   private _saveInLocalStorageEffect: EffectRef = effect(() => {
     LocalStorageUtils.setLocalStorageItem( {
@@ -61,17 +67,26 @@ export class GiphyService {
     });
   });
 
-  constructor() {
-    this.getTrendingGifs(API_GIPHY_REQUEST_TRENDING_EXAMPLE);
-  }
+  constructor() { }
 
   //PUBLIC FUNCTIONS
-  public getTrendingGifs(request: ApiGiphyRequestTrendingModel): void {
+  public loadTrendingGifs(request: ApiGiphyRequestTrendingModel): void {
+    /**
+     * Si se está llamando ya al API en el momento de volver a ejecutar
+     * esta llamada, saldrá de la función; es decir, esta comprobación actúa
+     * como un "semáforo" para evitar la sobrecarga innecesaria de llamadas
+     */
+    if (this._trendingGifsIsLoading()) return;
+    /**
+     * En caso de que no haya ya una llamada prevía, pondremos el "semáforo"
+     * en rojo (_trendingGifsIsLoading = true)
+     */
+    this._trendingGifsIsLoading.set(true);
+
     //Destructuración de la request
     const {
       api_key: API_KEY,
       limit: LIMIT,
-      offset: OFFSET,
       rating: RATING,
       bundle: BUNDLE
     } = request;
@@ -84,17 +99,37 @@ export class GiphyService {
         params: {
           api_key: API_KEY,
           limit: LIMIT!,
-          offset: OFFSET!,
+          offset: this._trendingGifsPage() * parseInt(LIMIT!),
           rating: RATING!,
           bundle: BUNDLE!
         }
       }
+    ).pipe(
+      takeUntil(this.destroySubscription$) //Hará que la subscripción dure hasta que se cierre el destroy
     ).subscribe( (response) => {
       const {
         data: DATA
       } = response;
+      const newGifs = GiphyMapper.mapGiphyResponseTrendingDataToGifs(DATA);
 
-      this.trendingGifs.set(GiphyMapper.mapGiphyResponseTrendingDataToGifs(DATA));
+      /**
+       * Actualiza la señal añadiendo a los ya existentes gifs (currentGifs)
+       * los nuevos gifs devueltos (newGifs)
+       */
+      this.trendingGifs.update( currentGifs => [
+        ...currentGifs,
+        ...newGifs
+      ]);
+
+      this._trendingGifsPage.update( currentPage =>
+        currentPage + 1
+      );
+
+      /**
+       * Una vez finalizada la llamada, volvemos a poner el "semáforo"
+       * en verde (_trendingGifsIsLoading = false)
+       */
+      this._trendingGifsIsLoading.set(false);
     });
   }
 
@@ -146,5 +181,16 @@ export class GiphyService {
         }));
       })
     );
+  }
+
+  //IMPLEMENTS
+  /**
+   * Una vez se destruya el servicio (aunque este se inyecte de raíz),
+   * todas aquellas subscripciones con "takeUntil(this.destroySubscription$)"
+   * cerrarán sus subscripciones para evitar las fugas de memoria
+   */
+  ngOnDestroy(): void {
+    this.destroySubscription$.next();
+    this.destroySubscription$.complete();
   }
 }

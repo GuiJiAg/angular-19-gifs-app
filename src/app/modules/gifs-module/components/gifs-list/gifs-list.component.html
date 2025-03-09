@@ -1,4 +1,8 @@
-<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+<div
+  #fatherDiv
+  class="h-screen overflow-y-scroll grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"
+  (scroll)="onScroll()"
+  >
   @if (normalGifsAreAviable) {
     @for (gif of gifsList(); track gif.id) {
       <div>
@@ -10,13 +14,15 @@
       </div>
     }
   } @else {
-    @for (gif of giphyGifs(); track gif.id) {
-      <div>
-        <app-gifs-list-item
-          [normalGifsAreAviable]="normalGifsAreAviable"
-          [giphyGifs]="gif"
-          >
-        </app-gifs-list-item>
+    @for (gifsList of giphyGifsMatrix(); track $index) {
+      <div class="grid gap-4">
+        @for (gif of gifsList; track gif.id) {
+          <app-gifs-list-item
+            [normalGifsAreAviable]="normalGifsAreAviable"
+            [giphyGif]="gif"
+            >
+          </app-gifs-list-item>
+        }
       </div>
     }
   }
